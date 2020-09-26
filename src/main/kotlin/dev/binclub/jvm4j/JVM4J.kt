@@ -6,27 +6,38 @@ package dev.binclub.jvm4j
  * @author cookiedragon234 26/Sep/2020
  */
 object JVM4J {
+	private val loader = Loader // initialize this to load native library
+	
 	@JvmStatic
 	fun getVM(): JavaVM {
-		val p = _getVM()
+		val p = getVM0()
+		if (p == 0L) {
+			throw NullPointerException("JavaVM was null")
+		}
 		return JavaVM(p)
 	}
 	
 	@JvmStatic
 	fun getJvmti(vm: JavaVM): Jvmti {
-		val p = _getJvmti(vm.javaVM_P)
+		val p = getJvmti0(vm.javaVM_P)
+		if (p == 0L) {
+			throw NullPointerException("Jvmti not supported")
+		}
 		return Jvmti(p)
 	}
 	
 	@JvmStatic
-	fun getJmm(vm: JavaVM): Jmm {
-		val p = _getJmm(vm.javaVM_P)
+	fun getJmm(): Jmm {
+		val p = getJmm0()
+		if (p == 0L) {
+			throw NullPointerException("Jmm not supported")
+		}
 		return Jmm(p)
 	}
 	
-	private external fun _getVM(): Long
-	private external fun _getJvmti(vm: Long): Long
-	private external fun _getJmm(vm: Long): Long
+	private external fun getVM0(): Long
+	private external fun getJvmti0(vm: Long): Long
+	private external fun getJmm0(): Long
 	
 	external fun getInterfaceVersion(): Int
 	external fun iHashCode(obj: Any?): Int

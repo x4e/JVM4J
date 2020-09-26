@@ -10,7 +10,8 @@ use std::os::raw::{c_int, c_void};
 use std::ptr::null_mut;
 use std::borrow::BorrowMut;
 use rs_jvm_bindings::jvmti::{JVMTI_VERSION_1_2, jvmtiEnv};
-use rs_jvm_bindings::jmm::JMM_VERSION_1_2_2;
+use rs_jvm_bindings::jmm::{JMM_VERSION_1_2_2, JmmInterface};
+use rs_jvm_bindings::jvm::JVM_GetManagement;
 
 #[no_mangle]
 pub unsafe extern "system" fn JNI_OnLoad(_vm: *mut JavaVM, _reserved: &mut c_void) -> c_int {
@@ -18,21 +19,22 @@ pub unsafe extern "system" fn JNI_OnLoad(_vm: *mut JavaVM, _reserved: &mut c_voi
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J__getVM(
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_getVM0(
 	env: *mut JNIEnv, _this: jobject,
 ) -> jlong {
 	let mut vm: *mut JavaVM = null_mut();
 	{
 		let result = (**env).GetJavaVM.unwrap()(env, vm.borrow_mut());
 		if result != JNI_OK as i32 || vm.is_null() {
-			panic!("Couldn't fetch vm instance ({})", result);
+			eprintln!("Couldn't fetch vm instance ({})", result);
+			return 0;
 		}
 	}
 	vm as jlong
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J__getJvmti(
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_getJvmti0(
 	_env: *mut JNIEnv, _this: jobject,
 	vm: jlong
 ) -> jlong {
@@ -41,7 +43,8 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J__getJvmti(
 	{
 		let result = (**vm).GetEnv.unwrap()(vm, jvmti_ptr.borrow_mut(), JVMTI_VERSION_1_2 as i32);
 		if result != JNI_OK as i32 || jvmti_ptr.is_null() {
-			panic!("Couldn't fetch jvmti instance ({})", result);
+			eprintln!("Couldn't fetch jvmti instance ({})", result);
+			return 0;
 		}
 	}
 	let jvmti: *mut jvmtiEnv = jvmti_ptr as *mut jvmtiEnv;
@@ -49,18 +52,14 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J__getJvmti(
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J__getJmm(
-	_env: *mut JNIEnv, _this: jobject,
-	vm: jlong
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_getJmm0(
+	_env: *mut JNIEnv, _this: jobject
 ) -> jlong {
-	let mut vm: *mut JavaVM = vm as *mut JavaVM;
-	let mut jmm_ptr: *mut c_void = null_mut();
-	{
-		let result = (**vm).GetEnv.unwrap()(vm, jmm_ptr.borrow_mut(), JMM_VERSION_1_2_2 as i32);
-		if result != JNI_OK as i32 || jmm_ptr.is_null() {
-			panic!("Couldn't fetch jmm instance ({})", result);
-		}
+	
+	let mut jmm_ptr: *mut c_void = JVM_GetManagement(JMM_VERSION_1_2_2 as i32);
+	if jmm_ptr.is_null() {
+		return 0;
 	}
-	let jmm: *mut jvmtiEnv = jmm_ptr as *mut jvmtiEnv;
+	let jmm: *mut JmmInterface = jmm_ptr as *mut JmmInterface;
 	jmm as jlong
 }
