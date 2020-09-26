@@ -1,4 +1,4 @@
-use rs_jvm_bindings::jni::{JavaVM, JNI_VERSION_1_8, jlong, JNIEnv, jobject, JNI_OK, jint, jstring, jclass, jmethodID, jboolean, jdouble, jthrowable};
+use rs_jvm_bindings::jni::{JavaVM, JNI_VERSION_1_8, jlong, JNIEnv, jobject, JNI_OK, jint, jstring, jclass, jmethodID, jboolean, jdouble, jthrowable, jobjectArray};
 use rs_jvm_bindings::utils::*;
 use rs_jvm_bindings::jvm::*;
 use std::os::raw::c_void;
@@ -383,36 +383,139 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_isInterrupted(
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_(
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_holdsLock(
 	env: *mut JNIEnv, _this: jobject,
-	throwable: jthrowable
-) {
+	thread_class: jclass, obj: jobject
+) -> jboolean {
+	JVM_HoldsLock(env, thread_class, obj)
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_(
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_dumpAllStacks(
 	env: *mut JNIEnv, _this: jobject,
-	throwable: jthrowable
+	unused: jclass
 ) {
+	JVM_DumpAllStacks(env, unused)
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_(
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_getAllThreads(
 	env: *mut JNIEnv, _this: jobject,
-	throwable: jthrowable
-) {
+	dummy: jobject
+) -> jobjectArray {
+	JVM_GetAllThreads(env, dummy)
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_(
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_setNativeThreadName(
 	env: *mut JNIEnv, _this: jobject,
-	throwable: jthrowable
+	thread: jobject, name: jstring
 ) {
+	JVM_SetNativeThreadName(env, thread, name)
 }
 
 #[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_dumpThreads(
+	env: *mut JNIEnv, _this: jobject,
+	thread_class: jclass, threads: jobjectArray
+) -> jobjectArray {
+	JVM_DumpThreads(env, thread_class, threads)
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_currentLoadedClass(
+	env: *mut JNIEnv, _this: jobject
+) -> jclass {
+	JVM_CurrentLoadedClass(env)
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_currentClassLoader(
+	env: *mut JNIEnv, _this: jobject
+) -> jobject {
+	JVM_CurrentClassLoader(env)
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_getClassContext(
+	env: *mut JNIEnv, _this: jobject
+) -> jobjectArray {
+	JVM_GetClassContext(env)
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_classDepth(
+	env: *mut JNIEnv, _this: jobject,
+	name: jstring
+) -> jint {
+	JVM_ClassDepth(env, name)
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_classLoaderDepth(
+	env: *mut JNIEnv, _this: jobject
+) -> jint {
+	JVM_ClassLoaderDepth(env)
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_getSystemPackages(
+	env: *mut JNIEnv, _this: jobject
+) -> jobjectArray {
+	JVM_GetSystemPackages(env)
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_allocateNewObject(
+	env: *mut JNIEnv, _this: jobject,
+	obj: jobject, curr_class: jclass, init_class: jclass
+) -> jobject {
+	JVM_AllocateNewObject(env, obj, curr_class, init_class)
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_allocateNewArray(
+	env: *mut JNIEnv, _this: jobject,
+	obj: jobject, curr_class: jclass, length: jint
+) -> jobject {
+	JVM_AllocateNewArray(env, obj, curr_class, length)
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_latestUserDefinedLoader(
+	env: *mut JNIEnv, _this: jobject
+) -> jobject {
+	JVM_LatestUserDefinedLoader(env)
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_loadClass0(
+	env: *mut JNIEnv, _this: jobject,
+	obj: jobject, curr_class: jclass, curr_class_name: jstring
+) -> jclass {
+	JVM_LoadClass0(env, obj, curr_class, curr_class_name)
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_getArrayLength(
+	env: *mut JNIEnv, _this: jobject,
+	arr: jobject
+) -> jint {
+	JVM_GetArrayLength(env, arr)
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_getArrayElement(
+	env: *mut JNIEnv, _this: jobject,
+	arr: jobject, index: jint
+) -> jobject {
+	JVM_GetArrayElement(env, arr, index)
+}
+
+/*
+#[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_(
 	env: *mut JNIEnv, _this: jobject,
-	throwable: jthrowable
+
 ) {
-}
+}*/

@@ -61,11 +61,11 @@ object JVM4J {
 	external fun fillInStackTrace(throwable: Throwable)
 	external fun getStackTraceDepth(throwable: Throwable): Int
 	external fun getStackTraceElement(throwable: Throwable, index: Int): Any?
-	external fun initializeCompiler(compCls: Class<*>)
-	external fun isSilentCompiler(compCls: Class<*>): Boolean
-	external fun compileClass(compCls: Class<*>, cls: Class<*>): Boolean
-	external fun compileClasses(compCls: Class<*>, name: String): Boolean
-	external fun compilerCommand(compCls: Class<*>, arg: Any?): Any
+	external fun initializeCompiler(compCls: Class<*>?)
+	external fun isSilentCompiler(compCls: Class<*>?): Boolean
+	external fun compileClass(compCls: Class<*>?, cls: Class<*>): Boolean
+	external fun compileClasses(compCls: Class<*>?, name: String): Boolean
+	external fun compilerCommand(compCls: Class<*>?, arg: Any?): Any
 	external fun startThread(thread: Thread)
 	external fun stopThread(thread: Thread, exception: Any?)
 	external fun isThreadAlive(thread: Thread): Boolean
@@ -78,4 +78,24 @@ object JVM4J {
 	external fun countStackFrames(thread: Thread): Int
 	external fun interrupt(thread: Thread)
 	external fun isInterrupted(thread: Thread, clearInterrupted: Boolean): Boolean
+	external fun holdsLock(threadClass: Class<*>?, obj: Any): Boolean
+	@JvmOverloads
+	external fun dumpAllStacks(unused: Class<*>? = null)
+	@JvmOverloads
+	external fun getAllThreads(dummy: Class<*>? = null): Array<Thread>
+	external fun setNativeThreadName(thread: Any, name: String)
+	external fun dumpThreads(threadClass: Class<*>?, threads: Array<Thread>): Array<Thread>
+	external fun currentLoadedClass(): Class<*>
+	external fun currentClassLoader(): ClassLoader?
+	external fun getClassContext(): Array<Any?>
+	external fun classDepth(name: String): Int
+	external fun classLoaderDepth(): Int
+	external fun getSystemPackages(): Array<Any?>
+	external fun allocateNewObject(obj: Any?, currClass: Class<*>, initClass: Class<*>): Any
+	external fun allocateNewArray(obj: Any?, currClass: Class<*>, length: Int): Any
+	external fun latestUserDefinedLoader(): ClassLoader?
+	external fun loadClass0(obj: Any?, currClass: Class<*>, currClassName: String): Class<*>
+	external fun getArrayLength(arr: Any): Int
+	external fun getArrayElement(arr: Any, index: Int): Any
+	// TODO: carry on
 }
