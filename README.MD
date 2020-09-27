@@ -2,7 +2,8 @@
 
 JVM4J is a library giving Java applications access to low level JVM apis.
 
-Supports JVM 8+
+Supports JVM 8. For now will crash on newer JVMS. 
+TODO: Seperate binaries for newer JVMS.
 
 Examples:
 * [src/test/java/JvmTest.java](src/test/java/JvmTest.java)
