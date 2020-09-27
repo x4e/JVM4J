@@ -1,4 +1,5 @@
 mod jvm;
+mod jni;
 
 #[macro_use]
 extern crate rs_jvm_bindings;

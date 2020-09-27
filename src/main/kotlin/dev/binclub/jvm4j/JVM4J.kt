@@ -8,8 +8,7 @@ package dev.binclub.jvm4j
 object JVM4J {
 	private val loader = Loader // initialize this to load native library
 	
-	@JvmStatic
-	fun getVM(): JavaVM {
+	@JvmStatic fun getVM(): JavaVM {
 		val p = getVM0()
 		if (p == 0L) {
 			throw NullPointerException("JavaVM was null")
@@ -17,8 +16,7 @@ object JVM4J {
 		return JavaVM(p)
 	}
 	
-	@JvmStatic
-	fun getJvmti(vm: JavaVM): Jvmti {
+	@JvmStatic fun getJvmti(vm: JavaVM): Jvmti {
 		val p = getJvmti0(vm.javaVM_P)
 		if (p == 0L) {
 			throw NullPointerException("Jvmti not supported")
@@ -26,8 +24,7 @@ object JVM4J {
 		return Jvmti(p)
 	}
 	
-	@JvmStatic
-	fun getJmm(): Jmm {
+	@JvmStatic fun getJmm(): Jmm {
 		val p = getJmm0()
 		if (p == 0L) {
 			throw NullPointerException("Jmm not supported")
@@ -39,74 +36,69 @@ object JVM4J {
 	private external fun getJvmti0(vm: Long): Long
 	private external fun getJmm0(): Long
 	
-	external fun getInterfaceVersion(): Int
-	external fun iHashCode(obj: Any?): Int
-	external fun monitorWait(obj: Any?, ms: Long)
-	external fun monitorNotify(obj: Any?)
-	external fun monitorNotifyAll(obj: Any?)
-	external fun clone(obj: Any?): Any?
-	external fun internString(str: String?): String?
-	@JvmOverloads
-	external fun currentTimeMillis(ignored: Class<*>? = null): Long
-	@JvmOverloads
-	external fun nanoTime(ignored: Class<*>? = null): Long
-	@JvmOverloads
-	external fun arrayCopy(ignored: Class<*>? = null, src: Any?, src_pos: Int, dst: Any?, dst_pos: Int, length: Int)
-	external fun initProperties(p: Any?): Any?
-	external fun onExit(op: Runnable) // TODO: Not yet implemented
-	external fun exit(code: Int)
-	external fun halt(code: Int)
-	external fun gc()
-	external fun maxObjectInspectionAge(): Long
-	external fun traceInstructions(on: Boolean)
-	external fun traceMethodCalls(on: Boolean)
-	external fun totalMemory(): Long
-	external fun freeMemory(): Long
-	external fun maxMemory(): Long
-	external fun activeProcessorCount(): Int
-	external fun loadLibrary(name: String): Long
-	external fun unloadLibrary(handle: Long)
-	external fun findLibraryEntry(handle: Long, name: String): Long
-	external fun isSupportedJNIVersion(version: Int): Boolean
-	external fun isNaN(d: Double): Boolean
-	external fun fillInStackTrace(throwable: Throwable)
-	external fun getStackTraceDepth(throwable: Throwable): Int
-	external fun getStackTraceElement(throwable: Throwable, index: Int): Any?
-	external fun initializeCompiler(compCls: Class<*>?)
-	external fun isSilentCompiler(compCls: Class<*>?): Boolean
-	external fun compileClass(compCls: Class<*>?, cls: Class<*>): Boolean
-	external fun compileClasses(compCls: Class<*>?, name: String): Boolean
-	external fun compilerCommand(compCls: Class<*>?, arg: Any?): Any
-	external fun startThread(thread: Thread)
-	external fun stopThread(thread: Thread, exception: Any?)
-	external fun isThreadAlive(thread: Thread): Boolean
-	external fun suspendThread(thread: Thread)
-	external fun resumeThread(thread: Thread)
-	external fun setThreadPriority(thread: Thread, priority: Int)
-	external fun yield(threadClass: Class<*>?)
-	external fun sleep(threadClass: Class<*>?, ms: Long)
-	external fun currentThread(threadClass: Class<*>?): Thread?
-	external fun countStackFrames(thread: Thread): Int
-	external fun interrupt(thread: Thread)
-	external fun isInterrupted(thread: Thread, clearInterrupted: Boolean): Boolean
-	external fun holdsLock(threadClass: Class<*>?, obj: Any): Boolean
-	@JvmOverloads
-	external fun dumpAllStacks(unused: Class<*>? = null)
-	@JvmOverloads
-	external fun getAllThreads(dummy: Class<*>? = null): Array<Thread>
-	external fun setNativeThreadName(thread: Any, name: String)
-	external fun dumpThreads(threadClass: Class<*>?, threads: Array<Thread>): Array<Thread>
-	external fun currentLoadedClass(): Class<*>
-	external fun currentClassLoader(): ClassLoader?
-	external fun getClassContext(): Array<Any?>
-	external fun classDepth(name: String): Int
-	external fun classLoaderDepth(): Int
-	external fun getSystemPackages(): Array<Any?>
-	external fun allocateNewObject(obj: Any?, currClass: Class<*>, initClass: Class<*>): Any
-	external fun allocateNewArray(obj: Any?, currClass: Class<*>, length: Int): Any
-	external fun latestUserDefinedLoader(): ClassLoader?
-	external fun loadClass0(obj: Any?, currClass: Class<*>, currClassName: String): Class<*>
-	external fun getArrayLength(arr: Any): Int
-	external fun getArrayElement(arr: Any, index: Int): Any
+	@JvmStatic external fun getInterfaceVersion(): Int
+	@JvmStatic external fun iHashCode(obj: Any?): Int
+	@JvmStatic external fun monitorWait(obj: Any?, ms: Long)
+	@JvmStatic external fun monitorNotify(obj: Any?)
+	@JvmStatic external fun monitorNotifyAll(obj: Any?)
+	@JvmStatic external fun clone(obj: Any?): Any?
+	@JvmStatic external fun internString(str: String?): String?
+	@JvmOverloads @JvmStatic external fun currentTimeMillis(ignored: Class<*>? = null): Long
+	@JvmOverloads @JvmStatic external fun nanoTime(ignored: Class<*>? = null): Long
+	@JvmOverloads @JvmStatic external fun arrayCopy(ignored: Class<*>? = null, src: Any?, src_pos: Int, dst: Any?, dst_pos: Int, length: Int)
+	@JvmStatic external fun initProperties(p: Any?): Any?
+	@JvmStatic external fun onExit(op: Runnable) // TODO: Not yet implemented
+	@JvmStatic external fun exit(code: Int)
+	@JvmStatic external fun halt(code: Int)
+	@JvmStatic external fun gc()
+	@JvmStatic external fun maxObjectInspectionAge(): Long
+	@JvmStatic external fun traceInstructions(on: Boolean)
+	@JvmStatic external fun traceMethodCalls(on: Boolean)
+	@JvmStatic external fun totalMemory(): Long
+	@JvmStatic external fun freeMemory(): Long
+	@JvmStatic external fun maxMemory(): Long
+	@JvmStatic external fun activeProcessorCount(): Int
+	@JvmStatic external fun loadLibrary(name: String): Long
+	@JvmStatic external fun unloadLibrary(handle: Long)
+	@JvmStatic external fun findLibraryEntry(handle: Long, name: String): Long
+	@JvmStatic external fun isSupportedJNIVersion(version: Int): Boolean
+	@JvmStatic external fun isNaN(d: Double): Boolean
+	@JvmStatic external fun fillInStackTrace(throwable: Throwable)
+	@JvmStatic external fun getStackTraceDepth(throwable: Throwable): Int
+	@JvmStatic external fun getStackTraceElement(throwable: Throwable, index: Int): Any?
+	@JvmStatic external fun initializeCompiler(compCls: Class<*>?)
+	@JvmStatic external fun isSilentCompiler(compCls: Class<*>?): Boolean
+	@JvmStatic external fun compileClass(compCls: Class<*>?, cls: Class<*>): Boolean
+	@JvmStatic external fun compileClasses(compCls: Class<*>?, name: String): Boolean
+	@JvmStatic external fun compilerCommand(compCls: Class<*>?, arg: Any?): Any
+	@JvmStatic external fun startThread(thread: Thread)
+	@JvmStatic external fun stopThread(thread: Thread, exception: Any?)
+	@JvmStatic external fun isThreadAlive(thread: Thread): Boolean
+	@JvmStatic external fun suspendThread(thread: Thread)
+	@JvmStatic external fun resumeThread(thread: Thread)
+	@JvmStatic external fun setThreadPriority(thread: Thread, priority: Int)
+	@JvmStatic external fun yield(threadClass: Class<*>?)
+	@JvmStatic external fun sleep(threadClass: Class<*>?, ms: Long)
+	@JvmStatic external fun currentThread(threadClass: Class<*>?): Thread?
+	@JvmStatic external fun countStackFrames(thread: Thread): Int
+	@JvmStatic external fun interrupt(thread: Thread)
+	@JvmStatic external fun isInterrupted(thread: Thread, clearInterrupted: Boolean): Boolean
+	@JvmStatic external fun holdsLock(threadClass: Class<*>?, obj: Any): Boolean
+	@JvmOverloads @JvmStatic external fun dumpAllStacks(unused: Class<*>? = null)
+	@JvmOverloads @JvmStatic external fun getAllThreads(dummy: Class<*>? = null): Array<Thread>
+	@JvmStatic external fun setNativeThreadName(thread: Any, name: String)
+	@JvmStatic external fun dumpThreads(threadClass: Class<*>?, threads: Array<Thread>): Array<Thread>
+	@JvmStatic external fun currentLoadedClass(): Class<*>
+	@JvmStatic external fun currentClassLoader(): ClassLoader?
+	@JvmStatic external fun getClassContext(): Array<Any?>
+	@JvmStatic external fun classDepth(name: String): Int
+	@JvmStatic external fun classLoaderDepth(): Int
+	@JvmStatic external fun getSystemPackages(): Array<Any?>
+	@JvmStatic external fun allocateNewObject(obj: Any?, currClass: Class<*>, initClass: Class<*>): Any
+	@JvmStatic external fun allocateNewArray(obj: Any?, currClass: Class<*>, length: Int): Any
+	@JvmStatic external fun latestUserDefinedLoader(): ClassLoader?
+	@JvmStatic external fun loadClass0(obj: Any?, currClass: Class<*>, currClassName: String): Class<*>
+	@JvmStatic external fun getArrayLength(arr: Any): Int
+	@JvmStatic external fun getArrayElement(arr: Any, index: Int): Any
 	// TODO: carry on
 }
