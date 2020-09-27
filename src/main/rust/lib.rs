@@ -64,3 +64,19 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_getJmm0(
 	let jmm: *mut JmmInterface = jmm_ptr as *mut JmmInterface;
 	jmm as jlong
 }
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_objectAsPointer(
+	_env: *mut JNIEnv, _this: jobject,
+	obj: jobject
+) -> jlong {
+	obj as jlong
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_pointerAsObject(
+	_env: *mut JNIEnv, _this: jobject,
+	pointer: jlong
+) -> jobject {
+	pointer as jobject
+}

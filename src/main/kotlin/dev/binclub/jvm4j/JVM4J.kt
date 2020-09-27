@@ -36,6 +36,10 @@ object JVM4J {
 	private external fun getJvmti0(vm: Long): Long
 	private external fun getJmm0(): Long
 	
+	// dont abuse this too badly!
+	@JvmStatic external fun objectAsPointer(obj: Any?): Long
+	@JvmStatic external fun pointerAsObject(pointer: Long): Any?
+	
 	@JvmStatic external fun getInterfaceVersion(): Int
 	@JvmStatic external fun iHashCode(obj: Any?): Int
 	@JvmStatic external fun monitorWait(obj: Any?, ms: Long)
