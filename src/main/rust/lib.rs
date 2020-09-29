@@ -1,3 +1,4 @@
+mod jvmti;
 mod jvm;
 mod jni;
 
