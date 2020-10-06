@@ -9,6 +9,5 @@ class ClassHookTest {
 	@Test
 	fun test() {
 		JVM4J.getJvmti(JVM4J.getVM())
-		println(JvmtiResult::class.java.name)
 	}
 }

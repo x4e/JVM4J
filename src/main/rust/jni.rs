@@ -118,8 +118,9 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JNI4J_fatalError(
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JNI4J_pushLocalFrame(
 	env: *mut JNIEnv, _this: jobject,
-
-) {
+	capacity: jint
+) -> jint {
+	(**env).PushLocalFrame.unwrap()(env, capacity)
 }
 
 #[no_mangle]

@@ -40,7 +40,7 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_getJvmti0(
 	_env: *mut JNIEnv, _this: jobject,
 	vm: jlong
 ) -> jlong {
-	let mut vm: *mut JavaVM = vm as *mut JavaVM;
+	let vm: *mut JavaVM = vm as *mut JavaVM;
 	let mut jvmti_ptr: *mut c_void = null_mut();
 	{
 		let result = (**vm).GetEnv.unwrap()(vm, jvmti_ptr.borrow_mut(), JVMTI_VERSION_1_2 as i32);
@@ -58,7 +58,7 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_getJmm0(
 	_env: *mut JNIEnv, _this: jobject
 ) -> jlong {
 	
-	let mut jmm_ptr: *mut c_void = JVM_GetManagement(JMM_VERSION_1_2_2 as i32);
+	let jmm_ptr: *mut c_void = JVM_GetManagement(JMM_VERSION_1_2_2 as i32);
 	if jmm_ptr.is_null() {
 		return 0;
 	}

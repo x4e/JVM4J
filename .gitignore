@@ -3,6 +3,8 @@
 /out
 /build
 
+hs_err_pid*.log
+
 #Added by cargo
 
 /target

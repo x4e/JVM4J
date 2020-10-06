@@ -1,4 +1,4 @@
-use rs_jvm_bindings::jni::{JavaVM, JNI_VERSION_1_8, jlong, JNIEnv, jobject, JNI_OK, jint, jstring, jclass, jmethodID, jboolean, jdouble, jthrowable, jobjectArray};
+use rs_jvm_bindings::jni::{JavaVM, jlong, JNIEnv, jobject, jint, jstring, jclass, jboolean, jdouble, jthrowable, jobjectArray};
 use rs_jvm_bindings::utils::*;
 use rs_jvm_bindings::jvm::*;
 use std::os::raw::c_void;
@@ -94,15 +94,15 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_initProperties(
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_onExit(
-	env: *mut JNIEnv, _this: jobject,
-	func: jobject
+	_env: *mut JNIEnv, _this: jobject,
+	_func: jobject
 ) {
 	panic!("Not yet implemented");
 }
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_exit(
-	env: *mut JNIEnv, _this: jobject,
+	_env: *mut JNIEnv, _this: jobject,
 	code: jint
 ) {
 	JVM_Exit(code);
@@ -110,7 +110,7 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_exit(
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_halt(
-	env: *mut JNIEnv, _this: jobject,
+	_env: *mut JNIEnv, _this: jobject,
 	code: jint
 ) {
 	JVM_Halt(code);
@@ -118,21 +118,21 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_halt(
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_gc(
-	env: *mut JNIEnv, _this: jobject
+	_env: *mut JNIEnv, _this: jobject
 ) {
 	JVM_GC()
 }
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_maxObjectInspectionAge(
-	env: *mut JNIEnv, _this: jobject
+	_env: *mut JNIEnv, _this: jobject
 ) -> jlong {
 	JVM_MaxObjectInspectionAge()
 }
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_traceInstructions(
-	env: *mut JNIEnv, _this: jobject,
+	_env: *mut JNIEnv, _this: jobject,
 	on: jboolean
 ) {
 	JVM_TraceInstructions(on)
@@ -140,7 +140,7 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_traceInstructions(
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_traceMethodCalls(
-	env: *mut JNIEnv, _this: jobject,
+	_env: *mut JNIEnv, _this: jobject,
 	on: jboolean
 ) {
 	JVM_TraceMethodCalls(on)
@@ -148,28 +148,28 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_traceMethodCalls(
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_totalMemory(
-	env: *mut JNIEnv, _this: jobject
+	_env: *mut JNIEnv, _this: jobject
 ) -> jlong {
 	JVM_TotalMemory()
 }
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_freeMemory(
-	env: *mut JNIEnv, _this: jobject
+	_env: *mut JNIEnv, _this: jobject
 ) -> jlong {
 	JVM_FreeMemory()
 }
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_maxMemory(
-	env: *mut JNIEnv, _this: jobject
+	_env: *mut JNIEnv, _this: jobject
 ) -> jlong {
 	JVM_MaxMemory()
 }
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_activeProcessorCount(
-	env: *mut JNIEnv, _this: jobject
+	_env: *mut JNIEnv, _this: jobject
 ) -> jint {
 	JVM_ActiveProcessorCount()
 }
@@ -188,7 +188,7 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_loadLibrary(
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_unloadLibrary(
-	env: *mut JNIEnv, _this: jobject,
+	_env: *mut JNIEnv, _this: jobject,
 	handle: jlong
 ) {
 	JVM_UnloadLibrary(handle as *mut c_void)
@@ -208,7 +208,7 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_findLibraryEntry(
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_isSupportedJNIVersion(
-	env: *mut JNIEnv, _this: jobject,
+	_env: *mut JNIEnv, _this: jobject,
 	version: jint
 ) -> jboolean {
 	JVM_IsSupportedJNIVersion(version)
@@ -216,7 +216,7 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_isSupportedJNIVersion
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_isNaN(
-	env: *mut JNIEnv, _this: jobject,
+	_env: *mut JNIEnv, _this: jobject,
 	d: jdouble
 ) -> jboolean {
 	JVM_IsNaN(d)
@@ -249,41 +249,41 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_getStackTraceElement(
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_initializeCompiler(
 	env: *mut JNIEnv, _this: jobject,
-	compCls: jclass
+	comp_cls: jclass
 ) {
-	JVM_InitializeCompiler(env, compCls)
+	JVM_InitializeCompiler(env, comp_cls)
 }
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_isSilentCompiler(
 	env: *mut JNIEnv, _this: jobject,
-	compCls: jclass
+	comp_cls: jclass
 ) -> jboolean {
-	JVM_IsSilentCompiler(env, compCls)
+	JVM_IsSilentCompiler(env, comp_cls)
 }
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_compileClass(
 	env: *mut JNIEnv, _this: jobject,
-	compCls: jclass, cls: jclass
+	comp_cls: jclass, cls: jclass
 ) -> jboolean {
-	JVM_CompileClass(env, compCls, cls)
+	JVM_CompileClass(env, comp_cls, cls)
 }
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_compileClasses(
 	env: *mut JNIEnv, _this: jobject,
-	compCls: jclass, name: jstring
+	comp_cls: jclass, name: jstring
 ) -> jboolean {
-	JVM_CompileClasses(env, compCls, name)
+	JVM_CompileClasses(env, comp_cls, name)
 }
 
 #[no_mangle]
 pub unsafe extern "system" fn Java_dev_binclub_jvm4j_JVM4J_compilerCommand(
 	env: *mut JNIEnv, _this: jobject,
-	compCls: jclass, arg: jobject
+	comp_cls: jclass, arg: jobject
 ) -> jobject {
-	JVM_CompilerCommand(env, compCls, arg)
+	JVM_CompilerCommand(env, comp_cls, arg)
 }
 
 #[no_mangle]

@@ -7,11 +7,13 @@ package dev.binclub.jvm4j
  */
 class Jvmti internal constructor(private val jvmti_P: Long) {
 	/// https://docs.oracle.com/javase/8/docs/platform/jvmti/jvmti.html#SetEventNotificationMode
-	external fun setEventNotificationMode(enabled: Boolean, event: Int, thread: Thread? = null, p: Long = jvmti_P)
+	@JvmOverloads external fun setEventNotificationMode(enabled: Boolean, event: Int, thread: Thread? = null, p: Long = jvmti_P): JvmtiEmptyResult
 	external fun getAllThreads(): JvmtiResult<Array<Thread>>
 }
 
+typealias JvmtiEmptyResult = JvmtiResult<Unit>
 class JvmtiResult <out T> private constructor(private val inner: Any?) {
+	fun isEmpty() = inner == Unit
 	fun expect(): T = if (inner is JvmtiError) throw JvmtiException(inner) else inner as T
 	fun expect(msg: String): T = if (inner is JvmtiError) throw JvmtiException(msg, inner) else inner as T
 	fun unwrap() = expect()
@@ -89,13 +91,14 @@ class JvmtiResult <out T> private constructor(private val inner: Any?) {
 		UNATTACHED_THREAD(115),
 		INVALID_ENVIRONMENT(116),
 		MAX(116),
-		OTHER(-1);
+		OTHER(0x7fffffff),
+		JVMTI_METHOD_NOT_DEFINED(0x7ffffffe); // specific to jvmti4j
 		
 		companion object {
 			private val values = values()
-			private val valMap: Map<Int, JvmtiError> = HashMap<Int, JvmtiError>().apply {
+			private val valMap: Map<Int, JvmtiError> = HashMap<Int, JvmtiError>().also { map ->
 				values.forEach {
-					put(it.code, it)
+					map[it.code] = it
 				}
 			}
 			fun from(code: Int): JvmtiError = valMap[code] ?: OTHER
