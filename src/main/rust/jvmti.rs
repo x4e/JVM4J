@@ -1,9 +1,10 @@
-use rs_jvm_bindings::jni::{jobject, JNIEnv, jboolean, jint, jobjectArray, jclass, jmethodID, jlong};
-use rs_jvm_bindings::jvmti::{jvmtiEnv, jthread, jvmtiError, jvmtiError_JVMTI_ERROR_NONE, jvmtiEventMode, jvmtiEvent};
+use rs_jvm_bindings::jni::{jobject, JNIEnv, jboolean, jint, jobjectArray, jclass, jmethodID, jlong, jstring, jvalue};
+use rs_jvm_bindings::jvmti::{jvmtiEnv, jthread, jvmtiError, jvmtiError_JVMTI_ERROR_NONE, jvmtiEventMode, jvmtiEvent, jvmtiThreadInfo};
 use rs_jvm_bindings::utils::*;
 
 use std::ptr::null_mut;
 use std::borrow::BorrowMut;
+use std::mem::zeroed;
 
 static mut PANIC_ON_ERR: Option<bool> = None;
 static mut RESULT_CLS: Option<jclass> = None;
@@ -29,11 +30,10 @@ unsafe fn create_result(env: *mut JNIEnv, some: bool, out: jobject, err: jvmtiEr
 	let result_cls = match RESULT_CLS {
 		Some(x) => x,
 		None => {
-			let mut clazz = (**env).FindClass.unwrap()(env, cstr!("dev/binclub/jvm4j/JvmtiResult"));
-			assert_ne!(clazz, null_mut());
-			clazz = (**env).NewGlobalRef.unwrap()(env, clazz);
-			RESULT_CLS = Some(clazz);
-			clazz
+			let klass = (**env).FindClass.unwrap()(env, cstr!("dev/binclub/jvm4j/JvmtiResult"));
+			let klass = (**env).NewGlobalRef.unwrap()(env, klass);
+			RESULT_CLS = Some(klass);
+			klass
 		}
 	};
 	
@@ -76,8 +76,8 @@ unsafe fn empty_result(env: *mut JNIEnv, err: jvmtiError) -> jobject {
 	create_result(env, false, null_mut(), err)
 }
 
-unsafe fn some_result(env: *mut JNIEnv, out: jobject, err: jvmtiError) -> jobject {
-	create_result(env, true, out, err)
+unsafe fn some_result(env: *mut JNIEnv, out: jobject) -> jobject {
+	create_result(env, true, out, jvmtiError_JVMTI_ERROR_NONE)
 }
 
 #[no_mangle]
@@ -114,18 +114,115 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_Jvmti_getAllThreads(
 				(**env).SetObjectArrayElement.unwrap()(env, arr, i, *thread);
 			}
 			
-			some_result(env, arr, result)
+			some_result(env, arr)
 		},
 		_ => create_result(env, false, null_mut(), 0x7fffffff-1)
 	}
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_dev_binclub_jvm4j_Jvmti_(
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_Jvmti_suspendThread(
 	env: *mut JNIEnv, _this: jobject,
-	
+	thread: jthread,
 	jvmti: *mut jvmtiEnv
-) {
+) -> jobject {
+	match (**jvmti).SuspendThread {
+		Some(meth) => empty_result(env, meth(jvmti, thread)),
+		_ => create_result(env, false, null_mut(), 0x7ffffffe)
+	}
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_Jvmti_resumeThread(
+	env: *mut JNIEnv, _this: jobject,
+	thread: jthread,
+	jvmti: *mut jvmtiEnv
+) -> jthread {
+	match (**jvmti).ResumeThread {
+		Some(meth) => empty_result(env, meth(jvmti, thread)),
+		_ => create_result(env, false, null_mut(), 0x7ffffffe)
+	}
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_Jvmti_stopThread(
+	env: *mut JNIEnv, _this: jobject,
+	thread: jthread, exception: jobject,
+	jvmti: *mut jvmtiEnv
+) -> jobject {
+	match (**jvmti).StopThread {
+		Some(meth) => empty_result(env, meth(jvmti, thread, exception)),
+		_ => create_result(env, false, null_mut(), 0x7ffffffe)
+	}
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_Jvmti_interruptThread(
+	env: *mut JNIEnv, _this: jobject,
+	thread: jthread,
+	jvmti: *mut jvmtiEnv
+) -> jobject {
+	match (**jvmti).InterruptThread {
+		Some(meth) => empty_result(env, meth(jvmti, thread)),
+		_ => create_result(env, false, null_mut(), 0x7ffffffe)
+	}
+}
+
+static mut THREAD_INFO_CLASS: Option<jclass> = None;
+static mut THREAD_INFO_CONSTRUCTOR: Option<jmethodID> = None;
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_dev_binclub_jvm4j_Jvmti_getThreadInfo(
+	env: *mut JNIEnv, _this: jobject,
+	thread: jthread,
+	jvmti: *mut jvmtiEnv
+) -> jobject {
+	match (**jvmti).GetThreadInfo {
+		Some(meth) => {
+			let mut info_c: jvmtiThreadInfo = zeroed();
+			match meth(jvmti, thread, info_c.borrow_mut()) {
+				jvmtiError_JVMTI_ERROR_NONE => {
+					let thread_info_class: jclass = match THREAD_INFO_CLASS {
+						Some(x) => x,
+						None => {
+							let klass = (**env).FindClass.unwrap()(env, cstr!("dev/binclub/jvm4j/ThreadInfo"));
+							let klass = (**env).NewGlobalRef.unwrap()(env, klass);
+							THREAD_INFO_CLASS = Some(klass);
+							klass
+						}
+					};
+					
+					let constructor: jmethodID = match THREAD_INFO_CONSTRUCTOR {
+						Some(x) => x,
+						None => {
+							let constructor = (**env).GetMethodID.unwrap()(env, thread_info_class, cstr!("<init>"), cstr!("(Ljava/lang/String;IZLjava/lang/ThreadGroup;Ljava/lang/ClassLoader;)V)"));
+							THREAD_INFO_CONSTRUCTOR = Some(constructor);
+							constructor
+						}
+					};
+					
+					let name: jstring = if info_c.name.is_null() {
+						null_mut()
+					} else {
+						(**env).NewStringUTF.unwrap()(env, info_c.name)
+					};
+					
+					let args = vec![
+						jvalue { l: name },
+						jvalue { i: info_c.priority },
+						jvalue { z: info_c.is_daemon },
+						jvalue { l: info_c.thread_group },
+						jvalue { l: info_c.context_class_loader }
+					];
+					let out = (**env).NewObjectA.unwrap()(env, thread_info_class, constructor, args.as_ptr());
+					
+					some_result(env, out)
+				}
+				err => create_result(env, false, null_mut(), err)
+			}
+		},
+		_ => create_result(env, false, null_mut(), 0x7ffffffe)
+	}
 }
 
 /*
@@ -135,6 +232,6 @@ pub unsafe extern "system" fn Java_dev_binclub_jvm4j_Jvmti_(
 	env: *mut JNIEnv, _this: jobject,
 	
 	jvmti: *mut jvmtiEnv
-) {
+) -> jobject {
 }
 */
