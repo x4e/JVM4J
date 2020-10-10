@@ -1,4 +1,4 @@
-use rs_jvm_bindings::jni::{JavaVM, jlong, JNIEnv, jobject, jint, jstring, jclass, jboolean, jdouble, jthrowable, jobjectArray};
+use rs_jvm_bindings::jni::{jlong, JNIEnv, jobject, jint, jstring, jclass, jboolean, jdouble, jthrowable, jobjectArray};
 use rs_jvm_bindings::utils::*;
 use rs_jvm_bindings::jvm::*;
 use std::os::raw::c_void;
